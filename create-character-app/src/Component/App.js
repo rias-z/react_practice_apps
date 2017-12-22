@@ -8,7 +8,7 @@ class App extends Component {
   }
 
   componentDidMount(){
-    this.fetchData('users.json')
+    this.fetchData('http://localhost:5000/users')
   }
 
   handleSubmit = (e) => {
@@ -19,7 +19,9 @@ class App extends Component {
   }
 
   fetchData(url){
-    fetch(url)
+    fetch(url, {
+      method: 'get'
+    })
       .then(res => {
         console.log("fetchData")
         return res
@@ -34,11 +36,34 @@ class App extends Component {
       })
   }
 
+  fetchPostData = (e, url) => {
+    e.preventDefault()
+    console.log("fetchPostData")
+    console.log(url)
+
+    fetch(url, {
+      method: 'post',
+      headers: {'content-type': 'application/json'},
+      body: JSON.stringify({'name': 'deep_learning'})
+    })
+      .then(res => {
+        console.log("fetchPostData")
+        console.log(res)
+      })
+      .catch(err => {
+        console.log("post error")
+        console.log(err)
+      })
+  }
+
   render() {
     return (
       <div className='App'>
         <h1>create-character-app</h1>
         <CreateForm onSubmit={this.handleSubmit.bind(this)}/>
+        <form onSubmit={e => this.fetchPostData(e, "http://localhost:5000/users")}>
+          <button type="submit">POST</button>
+        </form>
       </div>
     )
   }
