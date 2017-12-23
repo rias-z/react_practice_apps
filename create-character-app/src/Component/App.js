@@ -5,6 +5,13 @@ import CreateForm from './CreateForm'
 class App extends Component {
   constructor(){
     super()
+
+    const users = []
+    this.state = {
+      users: users,
+      isLoading: false,
+      hasError: false
+    }
   }
 
   componentDidMount(){
@@ -19,27 +26,36 @@ class App extends Component {
   }
 
   fetchData(url){
+    this.setState({ isLoading: true })
+
     fetch(url, {
-      method: 'get'
+      method: 'get',
+      timeout: 5000
     })
       .then(res => {
-        console.log("fetchData")
+        if(!res.ok) {
+          throw Error(res.statusText)
+        }
+        this.setState({ isLoading: false})
         return res
       })
       .then(res => res.json())
       .then(data => {
-        console.log("data")
-        console.log(data)
+        const users = data.map(data => {
+          return Object.assign({}, data)
+        })
+        this.setState({ users: users })
       })
       .catch(() => {
-        console.log("error")
+        console.log("connection failed")
+        this.setState({ hasError: true })
       })
   }
 
   fetchPostData = (e, url) => {
     e.preventDefault()
-    console.log("fetchPostData")
-    console.log(url)
+
+    this.setState({ isLoading: true })
 
     fetch(url, {
       method: 'post',
@@ -47,25 +63,44 @@ class App extends Component {
       body: JSON.stringify({'name': 'deep_learning'})
     })
       .then(res => {
-        console.log("fetchPostData")
-        console.log(res)
+        if(!res.ok){
+          throw Error(res.statusText)
+        }
+        this.setState({ isLoading: false })
       })
-      .catch(err => {
-        console.log("post error")
-        console.log(err)
+      .catch(() => {
+        console.log("connection failed")
+        this.setState({ hasError: true })
       })
   }
 
   render() {
-    return (
-      <div className='App'>
-        <h1>create-character-app</h1>
-        <CreateForm onSubmit={this.handleSubmit.bind(this)}/>
-        <form onSubmit={e => this.fetchPostData(e, "http://localhost:5000/users")}>
-          <button type="submit">POST</button>
-        </form>
-      </div>
-    )
+    if ( !this.state.isLoading) {
+      return (
+        <div className='App'>
+          <h1>create-character-app</h1>
+          <CreateForm onSubmit={this.handleSubmit.bind(this)}/>
+          <form
+            onSubmit={e => this.fetchPostData(e, "http://localhost:5000/users")}>
+            <button type="submit">POST</button>
+          </form>
+        </div>
+      )
+    }else{
+      if (!this.state.hasError) {
+        return(
+          <div className='App'>
+            isLoading...
+          </div>
+        )
+      }else{
+        return(
+          <div className='App'>
+            Connection Failed
+          </div>
+        )
+      }
+    }
   }
 }
 
