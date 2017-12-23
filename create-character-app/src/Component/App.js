@@ -21,8 +21,12 @@ class App extends Component {
   handleSubmit = (e) => {
     e.preventDefault()
 
-    const name = e.target.name.value
-    console.log(name)
+    const user = {
+      "id": this.state.users.length + 1,
+      "name": e.target.name.value
+    }
+
+    this.fetchPostData(e, "http://localhost:5000/users", user)
   }
 
   fetchData(url){
@@ -36,7 +40,7 @@ class App extends Component {
         if(!res.ok) {
           throw Error(res.statusText)
         }
-        this.setState({ isLoading: false})
+        this.setState({ isLoading: false })
         return res
       })
       .then(res => res.json())
@@ -52,7 +56,7 @@ class App extends Component {
       })
   }
 
-  fetchPostData = (e, url) => {
+  fetchPostData = (e, url, user) => {
     e.preventDefault()
 
     this.setState({ isLoading: true })
@@ -60,13 +64,17 @@ class App extends Component {
     fetch(url, {
       method: 'post',
       headers: {'content-type': 'application/json'},
-      body: JSON.stringify({'name': 'deep_learning'})
+      body: JSON.stringify( {'name': user.name} )
     })
       .then(res => {
         if(!res.ok){
           throw Error(res.statusText)
         }
         this.setState({ isLoading: false })
+
+        const users = this.state.users
+        users.push(user)
+        this.setState({ users: users })
       })
       .catch(() => {
         console.log("connection failed")
@@ -81,11 +89,6 @@ class App extends Component {
           <CreateForm onSubmit={this.handleSubmit.bind(this)}/>
 
           <br />
-
-          <form
-            onSubmit={e => this.fetchPostData(e, "http://localhost:5000/users")}>
-            <button type="submit">SAMPLE POST</button>
-          </form>
 
           <UserList users={this.state.users} />
         </div>
