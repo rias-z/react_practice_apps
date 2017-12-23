@@ -1,10 +1,10 @@
-import React from 'react'
+import React, {Component} from 'react'
 
 
 class UserList extends Component{
   render() {
     const users = this.props.users.map(user=>(
-      <li key={user.id}>{user.name}</li>
+      <li key={user.id}>{user.id}: {user.name}</li>
     ))
 
     return (
@@ -17,3 +17,5 @@ class UserList extends Component{
     )
   }
 }
+
+export default UserList

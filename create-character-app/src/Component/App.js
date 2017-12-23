@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import CreateForm from './CreateForm'
-
+import UserList from './UserList'
 
 class App extends Component {
   constructor(){
@@ -78,12 +78,16 @@ class App extends Component {
     if ( !this.state.isLoading) {
       return (
         <div className='App'>
-          <h1>create-character-app</h1>
           <CreateForm onSubmit={this.handleSubmit.bind(this)}/>
+
+          <br />
+
           <form
             onSubmit={e => this.fetchPostData(e, "http://localhost:5000/users")}>
-            <button type="submit">POST</button>
+            <button type="submit">SAMPLE POST</button>
           </form>
+
+          <UserList users={this.state.users} />
         </div>
       )
     }else{
