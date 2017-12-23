@@ -83,18 +83,18 @@ class App extends Component {
   }
 
   render() {
-    if ( !this.state.isLoading) {
+    if ( !this.state.isLoading ) {
       return (
         <div className='App'>
           <CreateForm onSubmit={this.handleSubmit.bind(this)}/>
 
           <br />
 
-          <UserList users={this.state.users} />
+          <UserList users={ this.state.users } />
         </div>
       )
     }else{
-      if (!this.state.hasError) {
+      if ( !this.state.hasError ) {
         return(
           <div className='App'>
             isLoading...
