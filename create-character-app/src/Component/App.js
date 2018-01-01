@@ -23,7 +23,9 @@ class App extends Component {
 
     const user = {
       "id": this.state.users.length + 1,
-      "name": e.target.name.value
+      "name": e.target.name.value,
+      "job": e.target.job.value,
+      "st_str": e.target.st_str.value
     }
 
     this.fetchPostData(e, "http://localhost:5000/users", user)
@@ -64,7 +66,11 @@ class App extends Component {
     fetch(url, {
       method: 'post',
       headers: {'content-type': 'application/json'},
-      body: JSON.stringify( {'name': user.name} )
+      body: JSON.stringify({
+        'name': user.name,
+        'job': user.job,
+        'st_str': user.st_str
+      })
     })
       .then(res => {
         if(!res.ok){
