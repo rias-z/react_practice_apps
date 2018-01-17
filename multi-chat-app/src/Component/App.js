@@ -30,6 +30,8 @@ class App extends Component {
     this.state = {
       isAuthenticated: false,
       user_name: "guest",
+      timer: 0,
+      activeUserList: []
     }
   }
 
@@ -40,17 +42,23 @@ class App extends Component {
       return
 
     const token = 'Bearer ' + sessionId
-    getToken('http://localhost:5000/check/token', token)
+    getToken( endpoint + '/check/token', token)
       .then(() => {
         // ログイン状態にする
-        this.setState({isAuthenticated: true})
+        this.setState({
+          isAuthenticated: true,
+          user_name: localStorage.getItem('user_name'),
+        })
 
         // socket通信開始
-        console.log("socket通信開始")
         const socket = socketIOClient(endpoint)
-
         const user_id = localStorage.getItem('user_id')
         socket.emit('connected', user_id)
+
+        // 定期処理
+        this.setState({
+          timer: setInterval(this.handleTimer.bind(this), 3000)
+        })
       })
       .catch(err => {
         // token不正の場合ログアウトさせる
@@ -63,17 +71,39 @@ class App extends Component {
       })
   }
 
+  handleTimer() {
+    console.log("handleTimer")
+
+    const sessionId = localStorage.getItem('sessionId')
+    if(!sessionId)
+      return
+    const token = 'Bearer ' + sessionId
+
+    request
+      .get(endpoint + '/active')
+      .set({Authorization: token})
+      .then(res => {
+        let activeUserList = []
+        Object.keys(res.body).forEach( key => {
+          activeUserList.push(res.body[key].user_name)
+        })
+        this.setState({
+          activeUserList: activeUserList
+        })
+      })
+      .catch(err => {
+        console.log(err)
+      })
+  }
+
   handleLoginSubmit(e){
     e.preventDefault()
 
     const user_name = e.target.name.value
     const password = e.target.password.value
 
-    // const socket = socketIOClient(this.state.endpoint)
-    // socket.emit('msg', 'charlot')
-
     // ログインアクション
-    postLogin("http://localhost:5000/auth/login", user_name, password)
+    postLogin( endpoint + '/auth/login', user_name, password)
       .then(res =>{
         // ユーザ情報をローカルストレージに保存
         Object.keys(res.body).forEach( key => {
@@ -83,15 +113,21 @@ class App extends Component {
         // ユーザ情報をstateにセット
         this.setState({
           isAuthenticated: true,
-          user_name: res.body['user_name']
+          user_name: localStorage.getItem('user_name')
         })
 
-        // console.log("socket通信開始(ログイン時)")
+        // socket通信開始(ログイン時)
+        console.log("socket通信開始(ログイン時)")
         const socket = socketIOClient(endpoint)
         const user_id = localStorage.getItem('user_id')
 
         // TODO 既に他のユーザがログインしていた場合の処理が必要
         socket.emit('connected', (user_id))
+
+        // 定期処理
+        this.setState({
+          timer: setInterval(this.handleTimer.bind(this), 3000)
+        })
       })
       .catch(err => {
         // TODO emailかpasswordが間違っていることを警告
@@ -119,6 +155,9 @@ class App extends Component {
     this.setState({
       isAuthenticated: false
     })
+
+    // 定期処理の終了
+    clearInterval(this.state.timer)
   }
 
   render() {
@@ -126,7 +165,8 @@ class App extends Component {
       <div className='App'>
         <h1>App</h1>
 
-        name: {this.state.user_name}
+        name: {this.state.user_name}<br />
+        activeUserList: {this.state.activeUserList}
 
         <Switch>
           <Route
