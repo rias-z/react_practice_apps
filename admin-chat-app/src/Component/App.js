@@ -1,46 +1,12 @@
 import React, { Component } from 'react';
 import { Switch, Link, Route } from 'react-router-dom'
+import Top from './Top'
+import Admin from './Admin'
 
-
-class Top extends Component {
-  onSubmit(e) {
-    e.preventDefault()
-    const userName = e.target.userName.value
-
-    this.props.updateState(userName)
-  }
-
-  render() {
-    return(
-      <div className='Top'>
-        <h2>Top</h2>
-
-        <form onSubmit={this.onSubmit.bind(this)}>
-          name: <input type='text' name='userName' defaultValue='rias'/><br />
-          <input type='submit' value='user change' />
-        </form>
-      </div>
-    )
-  }
-}
-
-class Admin extends Component {
-  componentWillMount() {
-    this.props.updateState('admin')
-  }
-
-  render() {
-    return(
-      <div className='Admin'>
-        <h2>Admin</h2>
-      </div>
-    )
-  }
-}
 
 class App extends Component {
-  constructor() {
-    super()
+  constructor(props) {
+    super(props)
 
     this.state = {
       userName: 'no_user',
@@ -48,10 +14,20 @@ class App extends Component {
     }
   }
 
-  updateState(userName) {
+  // NormalUserのログインボタン押下時
+  handleLoginSubmit(e) {
+    e.preventDefault()
+
+    const userName = e.target.userName.value
     this.setState({
       userName: userName
     })
+
+    // localStorageに入力欄の名前を登録
+    localStorage.setItem('userName', userName)
+
+    // topに遷移
+    this.props.history.push('/top')
   }
 
   render() {
@@ -59,20 +35,25 @@ class App extends Component {
       <div className='App'>
         <h1>App</h1>
 
-        userName: {this.state.userName} <br /><br />
+        (app_name): {this.state.userName} <br /><br />
 
         link:<br />
-        <Link to='/'>go top</Link>
+        <form onSubmit={this.handleLoginSubmit.bind(this)}>
+          name: <input type='text' name='userName' defaultValue='rias'/><br />
+          <input type='submit' value='Login NormalUser' />
+        </form>
+
         <br />
-        <Link to='/admin'>go admin</Link>
+        <Link to='/admin'>Login Admin</Link>
         <hr />
 
         <Switch>
           <Route
-            exact path='/'
+            path='/top'
             render={() =>
               <Top
-                updateState={this.updateState.bind(this)}
+                {...this.props}
+                userName={this.state.userName}
               />
             }
           />
@@ -80,7 +61,7 @@ class App extends Component {
             path='/admin'
             render={() =>
               <Admin
-              updateState={this.updateState.bind(this)}
+                userName={this.state.userName}
               />
             }
           />
