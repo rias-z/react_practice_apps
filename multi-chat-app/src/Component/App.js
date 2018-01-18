@@ -36,6 +36,8 @@ class App extends Component {
   }
 
   componentWillMount() {
+    console.log("App componentWillMount")
+
     // 適当なgetを送ってログイン状態にする
     const sessionId = localStorage.getItem('sessionId')
     if(!sessionId)
