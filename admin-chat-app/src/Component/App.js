@@ -15,7 +15,7 @@ class Top extends Component {
       <div className='Top'>
         <h2>Top</h2>
 
-        <form onSubmit={this.onSubmit}>
+        <form onSubmit={this.onSubmit.bind(this)}>
           name: <input type='text' name='userName' defaultValue='rias'/><br />
           <input type='submit' value='user change' />
         </form>
@@ -25,11 +25,8 @@ class Top extends Component {
 }
 
 class Admin extends Component {
-  constructor() {
-    super()
-
-    console.log(this.props)
-    // this.props.updateState('admin')
+  componentWillMount() {
+    this.props.updateState('admin')
   }
 
   render() {
@@ -51,11 +48,10 @@ class App extends Component {
     }
   }
 
-  updateState(userName){
-    console.log("updateState")
-    // this.setState({
-    //   userName: userName
-    // })
+  updateState(userName) {
+    this.setState({
+      userName: userName
+    })
   }
 
   render() {
@@ -65,21 +61,28 @@ class App extends Component {
 
         userName: {this.state.userName} <br /><br />
 
-        <Link to='/'>go top</Link><br />
+        link:<br />
+        <Link to='/'>go top</Link>
+        <br />
         <Link to='/admin'>go admin</Link>
-
         <hr />
 
         <Switch>
           <Route
             exact path='/'
-            render={() => <Top {...this.state} />}
-            updateState={this.updateState.bind(this)}
+            render={() =>
+              <Top
+                updateState={this.updateState.bind(this)}
+              />
+            }
           />
           <Route
             path='/admin'
-            render={() => <Admin />}
-            updateState={this.updateState.bind(this)}
+            render={() =>
+              <Admin
+              updateState={this.updateState.bind(this)}
+              />
+            }
           />
         </Switch>
       </div>
