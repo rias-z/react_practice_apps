@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import socketIOClient from 'socket.io-client'
+import EntireChat from './EntireChat'
 
 
 const endpoint = 'http://localhost:5000'
@@ -13,7 +14,8 @@ class Admin extends Component {
     this.state = {
       socket: socket,
       userList: [],
-      userName: this.props.userName
+      userName: this.props.userName,
+      commentList: [],
     }
     this.init(socket)
   }
@@ -40,6 +42,15 @@ class Admin extends Component {
         // ログインしているユーザの更新
         this.setState({
           userList: userList
+        })
+      })
+
+      socket.on('update_msg', (receiveMsg) => {
+        let newMsg = this.state.commentList
+        newMsg.push(receiveMsg)
+
+        this.setState({
+          commentList: newMsg
         })
       })
     })
@@ -71,6 +82,8 @@ class Admin extends Component {
         </ul>
         <br />
         <input type='button' onClick={this.handleSubmit.bind(this)} value='handleSubmit'/>
+
+        <EntireChat {...this.state}/>
       </div>
     )
   }
