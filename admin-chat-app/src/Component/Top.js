@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import socketIOClient from 'socket.io-client'
 import EntireChat from './EntireChat'
-
+import SecretChat from './SecretChat'
 
 
 const endpoint = 'http://localhost:5000'
@@ -16,8 +16,8 @@ class Top extends Component {
       socket: socket,
       userList: [],
       userName: this.props.userName,
-      commentList: []
-
+      commentList: [],
+      secretCommentList: []
     }
     this.init(socket)
   }
@@ -53,6 +53,16 @@ class Top extends Component {
         })
       })
 
+      socket.on('update_secret_msg', (receiveMsgData) => {
+        // TODO 次生まれ変わるときはnewMsgというクソ変数名は避ける
+        let newMsg = this.state.secretCommentList
+        newMsg.push(receiveMsgData.data)
+
+        this.setState({
+          secretCommentList: newMsg
+        })
+      })
+
       socket.on('update_msg', (receiveMsg) => {
         let newMsg = this.state.commentList
         newMsg.push(receiveMsg)
@@ -71,6 +81,9 @@ class Top extends Component {
         (top_user): {this.state.userName}
 
         <EntireChat {...this.state}/>
+
+        <SecretChat secretUser='admin' {...this.state}
+        secretCommentList={this.state.secretCommentList} />
       </div>
     )
   }

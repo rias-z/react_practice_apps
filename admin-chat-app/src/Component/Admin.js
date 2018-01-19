@@ -1,9 +1,14 @@
 import React, { Component } from 'react';
 import socketIOClient from 'socket.io-client'
 import EntireChat from './EntireChat'
+import SecretChat from './SecretChat'
 
 
 const endpoint = 'http://localhost:5000'
+const secretUserList = [
+  'rias',
+  'charlot'
+]
 
 
 class Admin extends Component {
@@ -15,7 +20,8 @@ class Admin extends Component {
       socket: socket,
       userList: [],
       userName: this.props.userName,
-      commentList: []
+      commentList: [],
+      secretCommentList: []
     }
     this.init(socket)
   }
@@ -42,6 +48,16 @@ class Admin extends Component {
         // ログインしているユーザの更新
         this.setState({
           userList: userList
+        })
+      })
+
+      socket.on('update_secret_msg', (receiveMsgData) => {
+        // TODO 次生まれ変わるときはnewMsgというクソ変数名は避ける
+        let newMsg = this.state.secretCommentList
+        newMsg.push(receiveMsgData)
+
+        this.setState({
+          secretCommentList: newMsg
         })
       })
 
@@ -83,7 +99,27 @@ class Admin extends Component {
         <br />
         <input type='button' onClick={this.handleSubmit.bind(this)} value='handleSubmit'/>
 
-        <EntireChat {...this.state}/>
+        <EntireChat {...this.state} />
+
+        { secretUserList.map( (secretUser, key) => {
+          const secretCommentList = []
+
+          this.state.secretCommentList.map( msgData => {
+            console.log(secretUser)
+            if ( msgData.from === secretUser){
+              secretCommentList.push(msgData.data)
+            }
+          })
+
+          return (
+            <SecretChat
+              {...this.state}
+              key={key}
+              secretUser={secretUser}
+              secretCommentList={secretCommentList}
+            />
+          )
+        })}
       </div>
     )
   }
