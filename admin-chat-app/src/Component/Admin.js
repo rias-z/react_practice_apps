@@ -15,7 +15,7 @@ class Admin extends Component {
       socket: socket,
       userList: [],
       userName: this.props.userName,
-      commentList: [],
+      commentList: []
     }
     this.init(socket)
   }

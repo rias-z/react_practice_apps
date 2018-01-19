@@ -6,7 +6,7 @@ class EntireChatBox extends Component {
   render() {
     const commentList = this.props.commentList.map( (comment, key) => (
       <li key={key}>
-        {comment.data}
+        {comment.data} ({comment.userName})
       </li>
     ))
 

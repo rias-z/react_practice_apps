@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import socketIOClient from 'socket.io-client'
+import EntireChat from './EntireChat'
+
 
 
 const endpoint = 'http://localhost:5000'
@@ -13,7 +15,9 @@ class Top extends Component {
     this.state = {
       socket: socket,
       userList: [],
-      userName: this.props.userName
+      userName: this.props.userName,
+      commentList: []
+
     }
     this.init(socket)
   }
@@ -48,6 +52,15 @@ class Top extends Component {
           userList: userList
         })
       })
+
+      socket.on('update_msg', (receiveMsg) => {
+        let newMsg = this.state.commentList
+        newMsg.push(receiveMsg)
+
+        this.setState({
+          commentList: newMsg
+        })
+      })
     })
   }
 
@@ -56,6 +69,8 @@ class Top extends Component {
       <div className='Top'>
         <h2>Top</h2>
         (top_user): {this.state.userName}
+
+        <EntireChat {...this.state}/>
       </div>
     )
   }
