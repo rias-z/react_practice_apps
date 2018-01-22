@@ -11,27 +11,8 @@ class ImageUploadForm extends Component {
 
     this.state = {
       imgSrc: '',
-      message: '',
-      yurikumaImg: null
+      message: ''
     }
-  }
-
-  componentDidMount() {
-    fetch('http://localhost:5000/get/image')
-      .then(res => res.json())
-      .then(res => {
-        // jpg
-        let b64encoded = btoa(String.fromCharCode.apply(null, res.data));
-        let datajpg = "data:image/jpg;base64," + b64encoded;
-
-        this.setState({
-          yurikumaImg: datajpg
-        })
-
-      })
-      .catch(err => {
-        console.log("err")
-      })
   }
 
   handleChange(e) {
@@ -97,7 +78,9 @@ class ImageUploadForm extends Component {
         </form>
 
         getで取ってこれたimg<br />
-        <img alt='img' src={this.state.yurikumaImg} width='100' height='100'/>
+        <img alt='img' width='100' height='100'
+             src='http://localhost:5000/images/icon_yurikuma.jpg'
+        />
       </div>
     )
   }
