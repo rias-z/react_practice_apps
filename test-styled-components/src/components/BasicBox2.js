@@ -33,6 +33,7 @@ class BasicBox2 extends React.Component {
   render() {
     return (
       <div>
+        <h3>BasicBox03</h3>
         <form onSubmit={(e) => {
           e.preventDefault()
           const inputValue = e.target.temp.value
