@@ -1,6 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 
+import FlexBox from './components/FlexBox'
 
 const StyledApp = styled.div`
   background-color: rgb(200, 255, 255);
@@ -76,6 +77,7 @@ class App extends React.Component {
           }}
         >request</StyledRequestButton>
       </StyledApp>
+        <FlexBox /><hr />
     )
   }
 }
