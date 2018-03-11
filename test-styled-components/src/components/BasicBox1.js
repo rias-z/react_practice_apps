@@ -14,9 +14,9 @@ const StyledTitle = styled.h1`
 `
 
 
-const BasicBox = () => (
+const BasicBox01 = () => (
   <div>
-    <h3>basic01</h3>
+    <h3>BasicBox01</h3>
     <StyledWrapper>
       <StyledTitle>
         StyledTitle, basics
@@ -25,4 +25,4 @@ const BasicBox = () => (
   </div>
 )
 
-export default BasicBox
+export default BasicBox01
