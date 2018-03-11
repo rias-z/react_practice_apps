@@ -4,6 +4,7 @@ import styled from 'styled-components'
 import Buttons from './components/Buttons'
 import FlexBox from './components/FlexBox'
 import BasicBox1 from './components/BasicBox1'
+import BasicBox2 from './components/BasicBox2'
 
 
 const StyledHeader = styled.div`
@@ -23,9 +24,11 @@ class App extends React.Component {
 
         <h1>Test-Styled-Components</h1>
 
+        <BasicBox2 /><hr />
         <BasicBox1 /><hr />
         <FlexBox /><hr />
         <Buttons /><hr />
+
       </div>
     )
   }
