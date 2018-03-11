@@ -8,6 +8,7 @@ import BasicBox2 from './components/BasicBox2'
 import BasicBox3 from './components/BasicBox3'
 import BasicBox4 from './components/BasicBox4'
 import BasicBox5 from './components/BasicBox5'
+import BasicBox6 from './components/BasicBox6'
 
 
 const StyledHeader = styled.div`
@@ -27,6 +28,7 @@ class App extends React.Component {
 
         <h1>Test-Styled-Components</h1>
 
+        <BasicBox6 /><hr />
         <BasicBox5 /><hr />
         <BasicBox4 /><hr />
         <BasicBox3 /><hr />
